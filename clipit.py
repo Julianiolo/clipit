@@ -20,6 +20,8 @@ from torchvision import transforms
 from torchvision.transforms import functional as TF
 torch.backends.cudnn.benchmark = False		# NR: True is a bit faster, but can lead to OOM. False is more deterministic.
 #torch.use_deterministic_algorithms(True)		# NR: grid_sampler_2d_backward_cuda does not have a deterministic implementation
+import torch_xla
+import torch_xla.core.xla_model as xm
 
 from torch_optimizer import DiffGrad, AdamP, RAdam
 from perlin_numpy import generate_fractal_noise_2d
@@ -384,7 +386,8 @@ def do_init(args):
     global drawer
 
     # Do it (init that is)
-    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    #device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    device = xm.xla_device()
 
     if args.use_clipdraw:
         drawer = ClipDrawer(args.size[0], args.size[1], args.strokes)
