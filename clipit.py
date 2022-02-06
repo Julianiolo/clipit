@@ -665,7 +665,7 @@ anim_output_files=[]
 anim_cur_zs=[]
 anim_next_zs=[]
 
-times = {}
+times = {"at":0,"ci":0,"bw":0,"cz":0}
 
 def make_gif(args, iter):
     gif_output = os.path.join(args.animation_dir, "anim.gif")
@@ -913,7 +913,7 @@ def train(args, cur_it):
     for i in range(args.batches):
         ta = timeit.default_timer()
         lossAll = ascend_txt(args)
-        times["ci"] += timeit.default_timer()-ta
+        times["at"] += timeit.default_timer()-ta
         print(lossAll)
 
         ta = timeit.default_timer()
