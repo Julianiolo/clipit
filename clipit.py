@@ -23,6 +23,9 @@ torch.backends.cudnn.benchmark = False		# NR: True is a bit faster, but can lead
 import torch_xla
 import torch_xla.core.xla_model as xm
 
+import torch_xla.debug.metrics as met
+print(met.metrics_report())
+
 from torch_optimizer import DiffGrad, AdamP, RAdam
 from perlin_numpy import generate_fractal_noise_2d
 
@@ -919,6 +922,8 @@ def train(args, cur_it):
         times["ci"] += timeit.default_timer()-ta
 
         loss = sum(lossAll)
+
+        print("LOSS: " + torch_xla._XLAC._get_xla_tensors_text([loss]))
         ta = timeit.default_timer()
         loss.backward()
         times["bw"] += timeit.default_timer()-ta
