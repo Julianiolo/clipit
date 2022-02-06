@@ -40,6 +40,8 @@ global_padding_mode = 'reflection'
 global_aspect_width = 1
 global_spot_file = None
 
+import timeit
+
 from vqgan import VqganDrawer
 try:
     from clipdrawer import ClipDrawer
@@ -660,6 +662,8 @@ anim_output_files=[]
 anim_cur_zs=[]
 anim_next_zs=[]
 
+times = {}
+
 def make_gif(args, iter):
     gif_output = os.path.join(args.animation_dir, "anim.gif")
     if os.path.exists(gif_output):
@@ -898,18 +902,26 @@ def re_average_z(args):
 
 def train(args, cur_it):
     global drawer;
+    global times
     for opt in opts:
         # opt.zero_grad(set_to_none=True)
         opt.zero_grad()
 
     for i in range(args.batches):
+        ta = timeit.default_timer()
         lossAll = ascend_txt(args)
+        times["ci"] += timeit.default_timer()-ta
+        print(lossAll)
 
+        ta = timeit.default_timer()
         if i == 0 and cur_it % args.save_every == 0:
             checkin(args, cur_it, lossAll)
+        times["ci"] += timeit.default_timer()-ta
 
         loss = sum(lossAll)
+        ta = timeit.default_timer()
         loss.backward()
+        times["bw"] += timeit.default_timer()-ta
 
     for opt in opts:
         opt.step()
@@ -918,7 +930,11 @@ def train(args, cur_it):
         (cur_it % (args.overlay_every + args.overlay_offset)) == 0:
         re_average_z(args)
 
+    ta = timeit.default_timer()
     drawer.clip_z()    
+    times["cz"] += timeit.default_timer()-ta
+
+    print("current times @it{}: {}".format(cur_it, times))
 
 imagenet_templates = [
     "itap of a {}.",
