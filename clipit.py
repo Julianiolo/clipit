@@ -388,6 +388,7 @@ def do_init(args):
     # Do it (init that is)
     #device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     device = xm.xla_device()
+    print("USING THEM TPU BOII")
 
     if args.use_clipdraw:
         drawer = ClipDrawer(args.size[0], args.size[1], args.strokes)
