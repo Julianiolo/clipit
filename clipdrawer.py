@@ -35,9 +35,9 @@ class ClipDrawer(DrawingInterface):
         # gamma = 1.0
 
         # Use GPU if available
-        pydiffvg.set_use_gpu(torch.cuda.is_available())
-        device = torch.device('cuda')
-        pydiffvg.set_device(device)
+        #pydiffvg.set_use_gpu(torch.cuda.is_available())
+        #device = torch.device('cuda')
+        #pydiffvg.set_device(device)
 
         canvas_width, canvas_height = self.canvas_width, self.canvas_height
         num_paths = self.num_paths
